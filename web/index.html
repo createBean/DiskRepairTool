@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>NTFS 只读恢复工具</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>NTFS 只读恢复工具</h1>
+        <p class="sub">针对文件系统损坏、卷显示 RAW、根目录丢失的机械盘 / 固态盘</p>
+      </div>
+    </div>
+    <div class="badge" id="modeBadge">全程只读 · 不写源盘</div>
+  </header>
+
+  <section class="card" id="sec-disk">
+    <div class="card-head">
+      <span class="step">1</span>
+      <h2>选择磁盘</h2>
+      <button class="ghost" id="btnRefresh">刷新</button>
+    </div>
+    <div class="table-wrap">
+      <table id="diskTable">
+        <thead>
+          <tr><th>编号</th><th>型号</th><th>容量</th><th>分区表</th><th>状态</th><th>接口</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row" id="partRow" hidden>
+      <label>分区</label>
+      <select id="partSelect"></select>
+      <button class="primary" id="btnDiagnose">诊断这个分区</button>
+    </div>
+  </section>
+
+  <section class="card" id="sec-diag" hidden>
+    <div class="card-head">
+      <span class="step">2</span>
+      <h2>诊断结果</h2>
+    </div>
+    <div id="diagBody"></div>
+  </section>
+
+  <section class="card" id="sec-scan" hidden>
+    <div class="card-head">
+      <span class="step">3</span>
+      <h2>扫描 MFT 重建目录树</h2>
+      <button class="primary" id="btnScan">开始扫描</button>
+    </div>
+    <p class="hint">跳过根目录，直接顺序读取整张 MFT 表，按每条记录的「父目录引用」重建目录树。只读，不修改源盘。</p>
+    <div class="progress" id="scanBar" hidden>
+      <div class="bar"><i></i></div>
+      <div class="progress-meta"><span id="scanText">准备中…</span></div>
+    </div>
+  </section>
+
+  <section class="card" id="sec-browse" hidden>
+    <div class="card-head">
+      <span class="step">4</span>
+      <h2>浏览与选择</h2>
+      <span class="counter" id="selCount">已选 0 项</span>
+    </div>
+    <div class="chips" id="folderChips"></div>
+    <div class="crumbs" id="crumbs"></div>
+    <div class="row" style="margin:0 0 10px">
+      <label>筛选</label>
+      <select id="typeFilter">
+        <option value="all">全部类型</option>
+        <option value="image">只看图片</option>
+        <option value="video">只看视频</option>
+        <option value="doc">只看文档</option>
+        <option value="other">其他</option>
+      </select>
+      <span class="hint" style="margin:0">当前目录只显示符合条件的文件，目录始终显示</span>
+    </div>
+    <div class="browse">
+      <div class="list" id="browseList"></div>
+    </div>
+    <div class="row">
+      <button class="ghost" id="btnSelectAll">选中当前文件夹全部文件</button>
+      <button class="ghost" id="btnClearSel">清空选择</button>
+    </div>
+  </section>
+
+  <section class="card" id="sec-extract" hidden>
+    <div class="card-head">
+      <span class="step">5</span>
+      <h2>提取到本机</h2>
+    </div>
+    <div class="row">
+      <label>目标文件夹</label>
+      <input type="text" id="destInput" spellcheck="false">
+      <button class="primary" id="btnExtract">开始提取</button>
+    </div>
+    <div class="progress" id="exBar" hidden>
+      <div class="bar"><i></i></div>
+      <div class="progress-meta"><span id="exText">准备中…</span></div>
+    </div>
+    <div id="exDone" class="done" hidden></div>
+  </section>
+
+  <footer class="foot">
+    <span>所有读取都走原始设备句柄，不经过文件系统驱动；工具不会对源盘执行任何写操作。</span>
+  </footer>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
