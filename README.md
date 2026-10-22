@@ -10,6 +10,8 @@ It reads the raw disk, scans the entire MFT (Master File Table), and rebuilds th
 
 ---
 
+![Interface](docs/screenshot.png)
+
 ## Why it works when other tools don't
 
 Conventional recovery tools walk *volume → root directory → subdirectory → file*. If MFT record #5 — the root directory — is damaged, that chain breaks at the very first link. Windows marks the volume as RAW, most tools see an empty disk, and the ones that keep going fall back to signature carving, which throws away every file name.
@@ -61,6 +63,8 @@ python server.py
 ```
 
 The server listens on `http://127.0.0.1:8765/`.
+
+No faulty disk at hand? Open `http://127.0.0.1:8765/?demo=1` to browse the interface with sample data.
 
 ---
 

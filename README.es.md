@@ -10,6 +10,8 @@ Lee el disco en bruto, recorre toda la MFT (Master File Table) y reconstruye el 
 
 ---
 
+![Interfaz](docs/screenshot.png)
+
 ## Por qué funciona cuando otras herramientas fallan
 
 Las herramientas convencionales recorren la cadena *volumen → directorio raíz → subdirectorio → archivo*. Si el registro n.º 5 de la MFT —el directorio raíz— está dañado, esa cadena se rompe en el primer eslabón. Windows marca el volumen como RAW, la mayoría de las herramientas ven un disco vacío, y las que siguen adelante recurren al *carving* por firmas, que descarta todos los nombres de archivo.
@@ -61,6 +63,8 @@ python server.py
 ```
 
 El servidor escucha en `http://127.0.0.1:8765/`.
+
+¿No tienes un disco defectuoso a mano? Abre `http://127.0.0.1:8765/?demo=1` para ver la interfaz con datos de ejemplo.
 
 ---
 

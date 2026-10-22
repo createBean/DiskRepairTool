@@ -127,6 +127,7 @@ button.ghost { color: var(--muted); }
 .crumbs i { color: #c9c6bd; font-style: normal; }
 
 .browse { border: 1px solid var(--line); border-radius: 10px; max-height: 380px; overflow: auto; }
+.browse.demo { max-height: none; }
 .list .item {
   display: flex; align-items: center; gap: 10px; padding: 7px 12px;
   border-bottom: 1px solid #f4f2ed; font-size: 13px;

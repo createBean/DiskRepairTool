@@ -90,6 +90,55 @@ def _cache_path(disk, offset):
     return os.path.join(CACHE_DIR, "mft_v2_%d_%d.pkl" % (disk, offset))
 
 
+
+DEMO_TREE = [
+    (5, None, "根目录", True),
+]
+
+
+def _load_demo():
+    """载入一组合成数据，让没有故障盘的人也能预览界面。"""
+    rows = []
+
+    def d(idx, parent, name):
+        rows.append((idx, parent, name, 1, 0))
+
+    def f(idx, parent, name, size):
+        rows.append((idx, parent, name, 0, size))
+
+    d(100, 5, "照片")
+    d(200, 5, "视频")
+    d(300, 5, "文档")
+
+    d(101, 100, "2026-05-01 海边")
+    for i in range(18):
+        f(1000 + i, 101, "IMG_%04d.JPG" % (4201 + i), 3_100_000 + i * 48_213)
+
+    d(102, 100, "2026-06-12 生日")
+    for i in range(12):
+        f(1100 + i, 102, "DSC_%04d.JPG" % (880 + i), 9_400_000 + i * 71_339)
+
+    d(103, 100, "2026-07-03 郊游")
+    for i in range(31):
+        f(1200 + i, 103, "IMG_%04d.HEIC" % (5310 + i), 2_600_000 + i * 39_417)
+
+    for i in range(9):
+        f(2000 + i, 200, "DJI_20260501180917_%04d_D.MP4" % (760 + i), 120_000_000 + i * 9_734_118)
+    for i in range(6):
+        f(2100 + i, 200, "VID_20260612_%06d.mp4" % (110230 + i), 45_000_000 + i * 3_204_551)
+
+    f(3000, 300, "行程安排.pdf", 1_284_000)
+    f(3001, 300, "费用明细表.xlsx", 88_289_193)
+    f(3002, 300, "合同扫描件.docx", 2_047_360)
+    f(3003, 300, "照片备份.zip", 65_011_712)
+
+    _apply_rows(rows)
+    STATE["demo"] = True
+    STATE["scan"] = {"state": "done", "scanned": len(rows), "total": len(rows),
+                     "kept": len(rows), "elapsed": 0, "error": "", "demo": True}
+    return rows
+
+
 def start_scan(disk, offset, letter="", force=False):
     if not force:
         cached = _load_cache(disk, offset)
@@ -157,6 +206,10 @@ def _ensure_volume():
 
 
 def _extract_worker(records, dest):
+    if STATE.get("demo"):
+        STATE["extract"]["state"] = "error"
+        STATE["extract"]["error"] = "演示数据不能提取，请接入真实磁盘"
+        return
     try:
         vol = _ensure_volume()
     except Exception:
@@ -277,6 +330,10 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/api/folders":
             return self._send(200, self._top_folders())
+
+        if path == "/api/demo":
+            _load_demo()
+            return self._send(200, {"ok": True, "rows": len(STATE["rows"])})
 
         if path == "/api/home":
             return self._send(200, {

@@ -330,6 +330,21 @@ $("#typeFilter").onchange = (e) => {
 $("#destInput").value = "";
 
 (async function init() {
+  const demo = new URLSearchParams(location.search).get("demo");
+  if (demo === "1") {
+    await api("/api/demo");
+    $("#sec-disk").hidden = true;
+    $("#sec-diag").hidden = true;
+    $("#sec-scan").hidden = true;
+    $("#modeBadge").textContent = "演示数据 · 不是真实磁盘";
+    $("#destInput").value = "D:\\恢复文件";
+    document.querySelector(".browse").classList.add("demo");
+    await openBrowse(102, [
+      { index: 100, name: "照片" },
+      { index: 102, name: "2026-06-12 生日" },
+    ]);
+    return;
+  }
   await loadDisks();
   const home = await api("/api/home");
   if (home && home.dest) $("#destInput").value = home.dest;

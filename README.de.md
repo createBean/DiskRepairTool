@@ -10,6 +10,8 @@ Es liest den Rohdatenträger, durchsucht die gesamte MFT (Master File Table) und
 
 ---
 
+![Oberfläche](docs/screenshot.png)
+
 ## Warum es funktioniert, wenn andere Tools scheitern
 
 Herkömmliche Rettungstools laufen die Kette *Datenträger → Wurzelverzeichnis → Unterverzeichnis → Datei* ab. Ist MFT-Datensatz Nr. 5 – das Wurzelverzeichnis – beschädigt, bricht die Kette schon beim ersten Glied. Windows markiert den Datenträger als RAW, die meisten Tools sehen eine leere Platte, und die, die weitermachen, weichen auf Signatur-Carving aus, bei dem sämtliche Dateinamen verloren gehen.
@@ -61,6 +63,8 @@ python server.py
 ```
 
 Der Server lauscht auf `http://127.0.0.1:8765/`.
+
+Kein defekter Datenträger zur Hand? `http://127.0.0.1:8765/?demo=1` öffnen, um die Oberfläche mit Beispieldaten anzusehen.
 
 ---
 
